@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+{% block title %}Dashboard | Alumni Connect{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1>Welcome, {{ user.first_name|default:user.username }}</h1>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>My Profile</h3>
+                {% if profile %}
+                <p><strong>Name:</strong> {{ profile.full_name }}</p>
+                <p><strong>Department:</strong> {{ profile.department|default:"-" }}</p>
+                <p><strong>Batch:</strong> {{ profile.graduation_year|default:"-" }}</p>
+                <a href="{% url 'profile_detail' %}" class="btn btn-sm">View</a>
+                <a href="{% url 'profile_edit' %}" class="btn btn-sm btn-outline">Edit</a>
+                {% else %}
+                <p>No profile found.</p>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3>Quick Links</h3>
+                <ul class="clean-list">
+                    <li><a href="{% url 'alumni_list' %}">Browse Alumni</a></li>
+                    <li><a href="{% url 'profile_edit' %}">Update Profile</a></li>
+                    <li><a href="{% url 'contact' %}">Contact Admin</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="section-title">Recent Alumni</h2>
+        <div class="card-grid">
+            {% for alum in recent_alumni %}
+            <div class="card">
+                <h3>{{ alum.full_name }}</h3>
+                <p>{{ alum.current_role }}</p>
+                <p class="muted">{{ alum.current_company }}</p>
+                <a href="{% url 'alumni_detail' alum.pk %}" class="btn btn-sm">View</a>
+            </div>
+            {% empty %}
+            <p>No alumni to show.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

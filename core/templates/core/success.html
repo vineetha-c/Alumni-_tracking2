@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% block title %}Success | Alumni Connect{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="card narrow center">
+            <h1>Thank You!</h1>
+            <p>Your message has been sent successfully.</p>
+            <a href="{% url 'home' %}" class="btn">Go Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

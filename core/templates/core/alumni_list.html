@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+{% block title %}Alumni Directory | Alumni Connect{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1>Alumni Directory</h1>
+
+        <div class="filter-card">
+            <form method="get" class="filter-grid">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Name, company, skills...">
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <select name="department">
+                        <option value="">All</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if department_id==dept.id|stringformat:"s" %}selected{% endif
+                            %}>
+                            {{ dept.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Batch</label>
+                    <select name="year">
+                        <option value="">All</option>
+                        {% for y in years %}
+                        <option value="{{ y.id }}" {% if year_id==y.id|stringformat:"s" %}selected{% endif %}>
+                            {{ y.year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mentoring</label>
+                    <select name="mentoring">
+                        <option value="">Any</option>
+                        <option value="1" {% if mentoring=="1" %}selected{% endif %}>Available</option>
+                    </select>
+                </div>
+
+                <div class="form-group align-end">
+                    <button type="submit" class="btn">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-grid">
+            {% for alum in alumni %}
+            <div class="card">
+                {% if alum.photo %}
+                <img src="{{ alum.photo.url }}" alt="{{ alum.full_name }}" class="profile-pic">
+                {% else %}
+                <div class="avatar-placeholder">{{ alum.full_name|slice:":1" }}</div>
+                {% endif %}
+                <h3>{{ alum.full_name }}</h3>
+                <p>{{ alum.current_role|default:"Alumni Member" }}</p>
+                <p class="muted">{{ alum.current_company|default:"-" }}</p>
+                <p class="muted">{{ alum.city }}, {{ alum.country }}</p>
+                {% if alum.available_for_mentoring %}
+                <span class="badge">Mentor</span>
+                {% endif %}
+                <a href="{% url 'alumni_detail' alum.pk %}" class="btn btn-sm">View Profile</a>
+            </div>
+            {% empty %}
+            <p>No alumni found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

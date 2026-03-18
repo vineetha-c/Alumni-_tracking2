@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% block title %}My Profile | Alumni Connect{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        {% if profile %}
+        <div class="profile-layout">
+            <div class="card profile-sidebar">
+                {% if profile.photo %}
+                <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" class="profile-pic large-pic">
+                {% else %}
+                <div class="avatar-placeholder large-avatar">{{ profile.full_name|slice:":1" }}</div>
+                {% endif %}
+                <h2>{{ profile.full_name }}</h2>
+                <p>{{ profile.current_role }}</p>
+                <p class="muted">{{ profile.current_company }}</p>
+                <a href="{% url 'profile_edit' %}" class="btn btn-sm">Edit Profile</a>
+            </div>
+
+            <div class="card">
+                <h3>Profile Details</h3>
+                <p><strong>Department:</strong> {{ profile.department|default:"-" }}</p>
+                <p><strong>Batch:</strong> {{ profile.graduation_year|default:"-" }}</p>
+                <p><strong>Status:</strong> {{ profile.get_employment_status_display }}</p>
+                <p><strong>Location:</strong> {{ profile.city }}, {{ profile.country }}</p>
+                <p><strong>Phone:</strong> {{ profile.phone|default:"-" }}</p>
+                <p><strong>LinkedIn:</strong>
+                    {% if profile.linkedin_url %}
+                    <a href="{{ profile.linkedin_url }}" target="_blank">View</a>
+                    {% else %}-{% endif %}
+                </p>
+                <p><strong>GitHub:</strong>
+                    {% if profile.github_url %}
+                    <a href="{{ profile.github_url }}" target="_blank">View</a>
+                    {% else %}-{% endif %}
+                </p>
+                <p><strong>Mentoring:</strong> {{ profile.available_for_mentoring|yesno:"Yes,No" }}</p>
+                <p><strong>Skills:</strong> {{ profile.skills|default:"-" }}</p>
+                <p><strong>Bio:</strong> {{ profile.bio|default:"-" }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <p>Profile not found.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% block title %}Home | Alumni Connect{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <h1>Connect, Network, and Grow with Alumni</h1>
+            <p>
+                Alumni Connect helps graduates stay in touch, discover mentors,
+                find opportunities, and strengthen the community.
+            </p>
+            <div class="hero-actions">
+                <a href="{% url 'register' %}" class="btn">Join Now</a>
+                <a href="{% url 'alumni_list' %}" class="btn btn-outline">Explore Alumni</a>
+            </div>
+        </div>
+        <div class="hero-card">
+            <h3>Community Snapshot</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span>{{ total_alumni }}</span>
+                    <p>Alumni</p>
+                </div>
+                <div class="stat-box">
+                    <span>{{ mentors }}</span>
+                    <p>Mentors</p>
+                </div>
+                <div class="stat-box">
+                    <span>{{ departments }}</span>
+                    <p>Departments</p>
+                </div>
+                <div class="stat-box">
+                    <span>{{ years }}</span>
+                    <p>Batches</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Featured Alumni</h2>
+        <div class="card-grid">
+            {% for alum in featured_alumni %}
+            <div class="card">
+                {% if alum.photo %}
+                <img src="{{ alum.photo.url }}" alt="{{ alum.full_name }}" class="profile-pic">
+                {% else %}
+                <div class="avatar-placeholder">{{ alum.full_name|slice:":1" }}</div>
+                {% endif %}
+                <h3>{{ alum.full_name }}</h3>
+                <p>{{ alum.current_role|default:"Alumni Member" }}</p>
+                <p class="muted">{{ alum.current_company }}</p>
+                <a href="{% url 'alumni_detail' alum.pk %}" class="btn btn-sm">View Profile</a>
+            </div>
+            {% empty %}
+            <p>No alumni profiles yet. Be the first to join!</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
