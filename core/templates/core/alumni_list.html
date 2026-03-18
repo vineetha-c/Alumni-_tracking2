@@ -1,13 +1,15 @@
-{% extends 'core/base.html' %}
-{% block title %}Alumni Directory | Alumni Connect{% endblock %}
+{% extends "core/base.html" %}
+
+{% block title %}Alumni Directory - Alumni Connect{% endblock %}
 
 {% block content %}
-<section class="section">
+<section class="page-section">
     <div class="container">
         <h1>Alumni Directory</h1>
+        <p class="section-subtitle">Search and connect with alumni across departments and graduating batches.</p>
 
-        <div class="filter-card">
-            <form method="get" class="filter-grid">
+        <div class="card filter-card">
+            <form method="get" class="filter-form">
                 <div class="form-group">
                     <label>Search</label>
                     <input type="text" name="q" value="{{ query }}" placeholder="Name, company, skills...">
@@ -18,8 +20,7 @@
                     <select name="department">
                         <option value="">All</option>
                         {% for dept in departments %}
-                        <option value="{{ dept.id }}" {% if department_id==dept.id|stringformat:"s" %}selected{% endif
-                            %}>
+                        <option value="{{ dept.id }}">
                             {{ dept.name }}
                         </option>
                         {% endfor %}
@@ -30,47 +31,57 @@
                     <label>Batch</label>
                     <select name="year">
                         <option value="">All</option>
-                        {% for y in years %}
-                        <option value="{{ y.id }}" {% if year_id==y.id|stringformat:"s" %}selected{% endif %}>
-                            {{ y.year }}
+                        {% for year in years %}
+                        <option value="{{ year }}">
+                            {{ year }}
                         </option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Mentoring</label>
-                    <select name="mentoring">
-                        <option value="">Any</option>
-                        <option value="1" {% if mentoring=="1" %}selected{% endif %}>Available</option>
-                    </select>
-                </div>
-
-                <div class="form-group align-end">
+                    <label>&nbsp;</label>
                     <button type="submit" class="btn">Filter</button>
                 </div>
             </form>
         </div>
 
-        <div class="card-grid">
-            {% for alum in alumni %}
-            <div class="card">
-                {% if alum.photo %}
-                <img src="{{ alum.photo.url }}" alt="{{ alum.full_name }}" class="profile-pic">
-                {% else %}
-                <div class="avatar-placeholder">{{ alum.full_name|slice:":1" }}</div>
+        <div class="alumni-grid">
+            {% for profile in profiles %}
+            <div class="card alumni-card">
+                <div class="avatar">
+                    {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="{{ profile.user.get_full_name }}">
+                    {% else %}
+                    {{ profile.user.first_name|default:profile.user.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <h3>{{ profile.user.get_full_name|default:profile.user.username }}</h3>
+                <p class="meta">
+                    {{ profile.department.name|default:"No Department" }} • Batch {{
+                    profile.graduation_year|default:"N/A" }}
+                </p>
+
+                {% if profile.current_company %}
+                <p><strong>{{ profile.current_company }}</strong></p>
                 {% endif %}
-                <h3>{{ alum.full_name }}</h3>
-                <p>{{ alum.current_role|default:"Alumni Member" }}</p>
-                <p class="muted">{{ alum.current_company|default:"-" }}</p>
-                <p class="muted">{{ alum.city }}, {{ alum.country }}</p>
-                {% if alum.available_for_mentoring %}
-                <span class="badge">Mentor</span>
+
+                {% if profile.job_title %}
+                <p>{{ profile.job_title }}</p>
                 {% endif %}
-                <a href="{% url 'alumni_detail' alum.pk %}" class="btn btn-sm">View Profile</a>
+
+                {% if profile.skills %}
+                <p class="skills">{{ profile.skills }}</p>
+                {% endif %}
+
+                <a href="{% url 'profile_detail' profile.pk %}" class="btn btn-outline">View Profile</a>
             </div>
             {% empty %}
-            <p>No alumni found.</p>
+            <div class="card empty-state">
+                <h3>No alumni found</h3>
+                <p>Try changing the filters or search keyword.</p>
+            </div>
             {% endfor %}
         </div>
     </div>
